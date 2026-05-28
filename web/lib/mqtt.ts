@@ -14,7 +14,6 @@ const sessions = new Map<string, SessionState>();
 const SAMPLES_PER_MIN = 2; // 30 s publish interval
 const ONSET_MIN = 5;
 const END_ABSENCE_MIN = 5;
-const END_AWAKE_MIN = 10;
 const MIN_VALID_SESSION_HOURS = 2;
 
 function getSession(dev: string): SessionState {
@@ -101,8 +100,12 @@ async function closeSession(dev: string, endedAt: Date) {
 
 function updateSession(t: Telemetry) {
   const s = getSession(t.dev);
-  const ts = new Date(t.t * 1000);
-  const inBed = (t.in_bed ?? 0) === 1 || ((t.sleep_state ?? 0) >= 2);
+  const ts = new Date();   // server-side wall clock — firmware sends uptime
+
+  // Session detection uses ONLY in_bed (the C1001's dedicated bed-occupancy
+  // query). presence has hold-down logic and sleep_state defaults to 3 even
+  // without a real sleep cycle, so those were unreliable end-of-session signals.
+  const inBed = (t.in_bed ?? 0) === 1;
 
   if (inBed) {
     s.consecutiveInBed += 1;
@@ -113,18 +116,11 @@ function updateSession(t: Telemetry) {
     }
   } else {
     s.consecutiveInBed = 0;
-    if ((t.presence ?? 0) === 0) {
-      s.consecutiveOutOfBed += 1;
-      s.consecutiveAwake = 0;
-    } else if ((t.sleep_state ?? 0) === 1) {
-      s.consecutiveAwake += 1;
-      s.consecutiveOutOfBed = 0;
-    }
+    s.consecutiveOutOfBed += 1;
   }
 
-  const absenceEnded = s.consecutiveOutOfBed >= END_ABSENCE_MIN * SAMPLES_PER_MIN;
-  const awakeEnded = s.consecutiveAwake >= END_AWAKE_MIN * SAMPLES_PER_MIN;
-  if (s.startedAt && (absenceEnded || awakeEnded)) {
+  // End the session when the bed has been empty for END_ABSENCE_MIN minutes.
+  if (s.startedAt && s.consecutiveOutOfBed >= END_ABSENCE_MIN * SAMPLES_PER_MIN) {
     void closeSession(t.dev, ts);
   }
 }

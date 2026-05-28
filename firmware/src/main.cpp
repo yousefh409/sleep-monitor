@@ -4,10 +4,14 @@
 #include <PubSubClient.h>
 #include <ArduinoJson.h>
 #include <Wire.h>
+#include <esp_task_wdt.h>
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BME680.h>
 #include <DFRobot_HumanDetection.h>
 #include "config.h"
+
+constexpr uint32_t WDT_TIMEOUT_S = 180;       // reboot if loop hangs > 3 min
+constexpr uint32_t WIFI_RETRY_TIMEOUT_MS = 60000; // soft-reset if Wi-Fi gone > 1 min
 
 constexpr uint8_t MIC_PIN = A2;
 constexpr uint8_t LDR_PIN = A3;
@@ -47,9 +51,16 @@ void wifiConnect() {
   Serial.print("WiFi: connecting to "); Serial.println(WIFI_SSID);
   WiFi.mode(WIFI_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASS);
-  uint32_t t0 = millis();
+  uint32_t started = millis();
+  uint32_t last_dot = millis();
   while (WiFi.status() != WL_CONNECTED) {
-    if (millis() - t0 > 1000) { Serial.print("."); t0 = millis(); }
+    if (millis() - started > WIFI_RETRY_TIMEOUT_MS) {
+      Serial.println(" timeout — rebooting");
+      delay(100);
+      ESP.restart();
+    }
+    if (millis() - last_dot > 1000) { Serial.print("."); last_dot = millis(); }
+    esp_task_wdt_reset();
     delay(50);
   }
   Serial.print(" connected, IP="); Serial.println(WiFi.localIP());
@@ -130,6 +141,10 @@ void setup() {
   Serial.begin(115200);
   Serial1.begin(115200);
 
+  // Hardware watchdog: reboots the chip if loop() doesn't reset within WDT_TIMEOUT_S.
+  esp_task_wdt_init(WDT_TIMEOUT_S, true);
+  esp_task_wdt_add(NULL);
+
   Wire.begin();
   bme.begin();
   bme.setTemperatureOversampling(BME680_OS_8X);
@@ -154,6 +169,7 @@ void setup() {
 }
 
 void loop() {
+  esp_task_wdt_reset();   // pet the watchdog
   if (WiFi.status() != WL_CONNECTED) wifiConnect();
   if (!mqtt.connected()) mqttConnect();
   mqtt.loop();
