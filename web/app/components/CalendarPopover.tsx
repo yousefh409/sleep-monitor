@@ -81,7 +81,7 @@ export function CalendarPopover({ slots, selectedDate, onSelect, onClose, anchor
       ref={ref}
       role="dialog"
       aria-label="Pick a date"
-      className="absolute z-50 mt-2 w-80 rounded-2xl border border-rule bg-ground-raised p-4 shadow-lg"
+      className="absolute left-1/2 z-50 mt-2 w-80 -translate-x-1/2 rounded-2xl border border-rule bg-ground-raised p-4 shadow-lg"
     >
       <div className="mb-3 flex items-center justify-between">
         <div className="flex items-center gap-1">
