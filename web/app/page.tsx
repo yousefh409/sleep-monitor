@@ -236,7 +236,11 @@ function PageInner() {
 
         {!slot.inProgress && (
           <div className="grid gap-10 sm:grid-cols-2">
-            <WakeEvents events={detail?.night.wake_events ?? null} />
+            <WakeEvents
+              events={detail?.night.wake_events ?? null}
+              nightStartedAt={detail?.night.started_at ?? null}
+              nightEndedAt={detail?.night.ended_at ?? null}
+            />
             <Recommendations items={detail?.night.recommendations ?? null} />
           </div>
         )}

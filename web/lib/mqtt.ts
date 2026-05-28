@@ -78,9 +78,20 @@ async function closeSession(dev: string, endedAt: Date) {
      GROUP BY minute ORDER BY minute`,
     [dev, startedAt, endedAt]
   );
+  // Format minute as local America/Los_Angeles "YYYY-MM-DD HH:MM" (24h) so the LLM emits
+  // wake-event timestamps in the user's wall-clock time, not UTC.
+  const fmtMinute = (d: Date) => {
+    const p = new Intl.DateTimeFormat("en-CA", {
+      timeZone: "America/Los_Angeles",
+      year: "numeric", month: "2-digit", day: "2-digit",
+      hour: "2-digit", minute: "2-digit", hour12: false,
+    }).formatToParts(d);
+    const get = (t: string) => p.find((x) => x.type === t)!.value;
+    return `${get("year")}-${get("month")}-${get("day")} ${get("hour")}:${get("minute")}`;
+  };
   const header = "minute,state,breathing,hr,temp_c,humidity,gas_ohm,db_spl,light";
   const csv = [header, ...rows.map((r) =>
-    `${(r.minute as Date).toISOString()},${r.state},${r.breathing},${r.hr},${Number(r.temp_c).toFixed(1)},${Number(r.humidity).toFixed(1)},${r.gas},${Number(r.db_spl).toFixed(1)},${r.light}`
+    `${fmtMinute(r.minute as Date)},${r.state},${r.breathing},${r.hr},${Number(r.temp_c).toFixed(1)},${Number(r.humidity).toFixed(1)},${r.gas},${Number(r.db_spl).toFixed(1)},${r.light}`
   )].join("\n");
 
   try {
