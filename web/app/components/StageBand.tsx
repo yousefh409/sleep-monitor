@@ -34,6 +34,23 @@ function fmtClock(iso: string): string {
 
 export function StageBand({ rows }: Props) {
   if (rows.length === 0) return null;
+
+  // Per-row tooltip: range and duration of the contiguous run the row belongs to.
+  const tooltips: string[] = new Array(rows.length);
+  let s = 0;
+  for (let i = 1; i <= rows.length; i++) {
+    if (i === rows.length || rows[i].sleep_state !== rows[s].sleep_state) {
+      const startTs = rows[s].ts;
+      const endTs = rows[i - 1].ts;
+      const startMs = new Date(startTs).getTime();
+      const endMs = new Date(endTs).getTime();
+      const minutes = Math.max(1, Math.round((endMs - startMs) / 60000) + 1);
+      const text = `${fmtClock(startTs)} – ${fmtClock(endTs)} · ${stateLabel(rows[s].sleep_state)} (${minutes}m)`;
+      for (let j = s; j < i; j++) tooltips[j] = text;
+      s = i;
+    }
+  }
+
   const N = 5;
   const markers = Array.from({ length: N }, (_, i) => {
     const idx = Math.min(rows.length - 1, Math.round((i * (rows.length - 1)) / (N - 1)));
@@ -41,6 +58,7 @@ export function StageBand({ rows }: Props) {
       hour: "numeric", minute: "2-digit", hour12: true,
     });
   });
+
   return (
     <section className="space-y-2">
       <h2 className="text-[11px] font-medium uppercase tracking-[0.08em] text-ink-muted">Sleep stages</h2>
@@ -49,7 +67,7 @@ export function StageBand({ rows }: Props) {
           <div
             key={i}
             style={{ flex: 1, background: fill(r.sleep_state) }}
-            title={`${fmtClock(r.ts)} · ${stateLabel(r.sleep_state)}`}
+            title={tooltips[i]}
           />
         ))}
       </div>
