@@ -27,7 +27,7 @@ def find_port() -> str:
     return candidates[0]
 
 
-SLEEP_STATES = {0: "out", 1: "awake", 2: "light", 3: "deep"}
+SLEEP_STATES = {0: "deep", 1: "light", 2: "awake", 3: "none"}
 BREATH_STATES = {1: "normal", 2: "too fast", 3: "too slow", 4: "none"}
 
 

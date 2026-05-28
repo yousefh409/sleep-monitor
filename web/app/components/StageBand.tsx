@@ -3,10 +3,10 @@ type Row = { sleep_state: number | null; ts: string };
 type Props = { rows: Row[] };
 
 const COLOR: Record<number, string> = {
-  0: "var(--stage-out)",
-  1: "var(--stage-awake)",
-  2: "var(--stage-light)",
-  3: "var(--stage-deep)",
+  0: "var(--stage-deep)",
+  1: "var(--stage-light)",
+  2: "var(--stage-awake)",
+  3: "var(--stage-out)",
 };
 
 function fill(state: number | null | undefined): string {
@@ -35,10 +35,10 @@ export function StageBand({ rows }: Props) {
         {markers.map((m, i) => <span key={i}>{m}</span>)}
       </div>
       <div className="flex gap-4 text-[11px] text-ink-muted">
-        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm" style={{ background: "var(--stage-out)" }} />out</span>
-        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm" style={{ background: "var(--stage-awake)" }} />awake</span>
-        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm" style={{ background: "var(--stage-light)" }} />light</span>
         <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm" style={{ background: "var(--stage-deep)" }} />deep</span>
+        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm" style={{ background: "var(--stage-light)" }} />light</span>
+        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm" style={{ background: "var(--stage-awake)" }} />awake</span>
+        <span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-sm" style={{ background: "var(--stage-out)" }} />out</span>
       </div>
     </section>
   );
