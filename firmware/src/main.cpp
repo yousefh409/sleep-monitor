@@ -56,10 +56,10 @@ void mqttConnect() {
 }
 
 void publishTelemetry() {
-  DFRobot_HumanDetection::sSleepComposite c = radar.getSleepComposite();
+  sSleepComposite c = radar.getSleepComposite();
   uint16_t in_bed = radar.smSleepData(DFRobot_HumanDetection::eInOrNotInBed);
 
-  StaticJsonDocument<512> doc;
+  JsonDocument doc;
   doc["t"]              = (uint32_t)(millis() / 1000);
   doc["dev"]            = DEVICE_ID;
   doc["presence"]       = c.presence;
