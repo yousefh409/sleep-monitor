@@ -41,17 +41,17 @@ Your breakout uses the SPI-style pin labels (SDO / SCK / SDI / CS). The BME280 c
 | GND | Breadboard **−** rail (GND) |
 | DC | Feather **A2** (ADC1) |
 
-## Photoresistor + 1.5 kΩ (voltage divider)
+## Photoresistor + 3 kΩ (two 1.5 kΩ in series) (voltage divider)
 
 Analog output, ESP32 ADC1. Three pieces wired together on the breadboard.
 
 | Divider piece | Connects to |
 |---|---|
 | Photoresistor leg A | Breadboard **+** rail (3 V3) |
-| Photoresistor leg B | Junction row (shared with 1.5 kΩ and A3) |
+| Photoresistor leg B | Junction row (shared with 3 kΩ (two 1.5 kΩ in series) and A3) |
 | Junction row | Feather **A3** (ADC1) |
-| 1.5 kΩ leg A | Junction row (shared with photoresistor and A3) |
-| 1.5 kΩ leg B | Breadboard **−** rail (GND) |
+| 3 kΩ (two 1.5 kΩ in series) leg A | Junction row (shared with photoresistor and A3) |
+| 3 kΩ (two 1.5 kΩ in series) leg B | Breadboard **−** rail (GND) |
 
 ## Feather V2 — pin usage summary
 
@@ -67,4 +67,4 @@ Plug the Feather across the breadboard's center channel. The pins below are the 
 | TX | C1001 RX |
 | RX | C1001 TX |
 | A2 | Mic DC |
-| A3 | Photoresistor / 1.5 kΩ junction |
+| A3 | Photoresistor / 3 kΩ (two 1.5 kΩ in series) junction |
