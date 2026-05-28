@@ -150,14 +150,23 @@ function PageInner() {
   // Telemetry rows used by the charts and stage band.
   const rows = slot.inProgress ? todayRows : (detail?.telemetry ?? []);
 
-  const sensorScore = maxField(rows, "sleep_score");
-  const sleepQuality = lastField(rows, "sleep_quality");
-  const turnover = maxField(rows, "turnover_total");
-  const apneaEvents = maxField(rows, "apnea_events");
-  const lightSleepMin = maxField(rows, "light_sleep_dur");
-  const deepSleepMin = maxField(rows, "deep_sleep_dur");
-  const sleepTimeMin = maxField(rows, "sleep_time_min");
-  const wakeDurMin = maxField(rows, "wake_dur");
+  const startMs = detail?.night.started_at ? new Date(detail.night.started_at).getTime() : null;
+  const endMs = detail?.night.ended_at ? new Date(detail.night.ended_at).getTime() : null;
+  const inNightRows = (slot.inProgress || startMs === null || endMs === null)
+    ? rows
+    : rows.filter((r) => {
+        const ts = r.ts ? new Date(r.ts).getTime() : NaN;
+        return ts >= startMs && ts <= endMs;
+      });
+
+  const sensorScore = maxField(inNightRows, "sleep_score");
+  const sleepQuality = lastField(inNightRows, "sleep_quality");
+  const turnover = maxField(inNightRows, "turnover_total");
+  const apneaEvents = maxField(inNightRows, "apnea_events");
+  const lightSleepMin = maxField(inNightRows, "light_sleep_dur");
+  const deepSleepMin = maxField(inNightRows, "deep_sleep_dur");
+  const sleepTimeMin = maxField(inNightRows, "sleep_time_min");
+  const wakeDurMin = maxField(inNightRows, "wake_dur");
   const durationSec = detail?.night.duration_sec ?? null;
 
   // Charts expect rows with `ts` ISO timestamps and the relevant fields — both endpoints return that shape.

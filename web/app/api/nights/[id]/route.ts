@@ -54,7 +54,7 @@ export async function GET(_request: Request, context: { params: Promise<{ id: st
             avg(gas_ohm)::int AS gas_ohm,
             avg(db_spl) AS db_spl,
             avg(light_raw)::int AS light_raw
-     FROM telemetry WHERE device = $1 AND ts BETWEEN $2 AND $3
+     FROM telemetry WHERE device = $1 AND ts BETWEEN ($2::timestamptz - INTERVAL '1 hour') AND ($3::timestamptz + INTERVAL '1 hour')
      GROUP BY date_trunc('minute', ts) ORDER BY t`,
     [night.device, night.started_at, night.ended_at]);
 
