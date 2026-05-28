@@ -123,7 +123,7 @@ void publishTelemetry() {
   char buf[1024];
   size_t n = serializeJson(doc, buf);
   bool ok = mqtt.publish(MQTT_TOPIC, buf, n);
-  Serial.print("MQTT pub "); Serial.print(ok ? "ok " : "FAIL "); Serial.print(n); Serial.println(" bytes");
+  Serial.print("MQTT pub "); Serial.print(ok ? "ok " : "FAIL "); Serial.print(n); Serial.print(" bytes state="); Serial.println(mqtt.state());
 }
 
 void setup() {
@@ -147,7 +147,9 @@ void setup() {
   wifiConnect();
   net.setInsecure();
   mqtt.setServer(MQTT_HOST, MQTT_PORT);
-  mqtt.setBufferSize(1024);
+  mqtt.setBufferSize(2048);
+  mqtt.setKeepAlive(120);   // default 15s is too tight; our publish loop blocks 6-8s on C1001 UART
+  mqtt.setSocketTimeout(30);
   mqttConnect();
 }
 
