@@ -115,70 +115,85 @@ const ALL_COLS: Col[] = GROUPS.flatMap((g) => g.cols);
 
 export function TelemetryTable({ rows, limit = 50 }: { rows: TelemetryTableRow[]; limit?: number }) {
   const [filter, setFilter] = useState<string>("all");
+  const [open, setOpen] = useState(false);
   const newestFirst = [...rows].reverse().slice(0, limit);
 
   const visibleCols =
     filter === "all" ? ALL_COLS : GROUPS.find((g) => g.id === filter)?.cols ?? ALL_COLS;
 
   return (
-    <section className="rounded-2xl bg-white p-6 shadow-sm">
-      <div className="mb-4 flex items-center justify-between gap-4">
-        <h2 className="text-sm font-medium uppercase tracking-wide text-stone-500">
-          Recent telemetry
+    <section className="rounded-2xl border border-rule bg-ground-raised p-6">
+      <button
+        type="button"
+        onClick={() => setOpen(o => !o)}
+        aria-expanded={open}
+        className="flex w-full items-center justify-between gap-4"
+      >
+        <h2 className="text-[11px] font-medium uppercase tracking-[0.08em] text-ink-muted">
+          Raw telemetry
         </h2>
-        <div className="flex items-center gap-3">
-          <select
-            value={filter}
-            onChange={(e) => setFilter(e.target.value)}
-            className="rounded-lg border border-stone-200 bg-white px-2 py-1 text-xs text-stone-700"
-          >
-            <option value="all">All fields ({ALL_COLS.length})</option>
-            {GROUPS.map((g) => (
-              <option key={g.id} value={g.id}>
-                {g.label} ({g.cols.length})
-              </option>
-            ))}
-          </select>
-          <span className="text-xs text-stone-400">{newestFirst.length} rows</span>
-        </div>
-      </div>
-      <div className="max-h-[28rem] overflow-auto">
-        <table className="min-w-full text-left">
-          <thead className="sticky top-0 z-10 bg-white">
-            <tr className="border-b border-stone-200 text-xs uppercase tracking-wide text-stone-500">
-              <th className="whitespace-nowrap py-2 pr-4 font-normal">Time</th>
-              {visibleCols.map((c) => (
-                <th key={c.key} className="whitespace-nowrap py-2 pr-4 font-normal">
-                  {c.label}
-                </th>
+        <span className="text-[11px] uppercase tracking-[0.08em] text-copper">
+          {open ? "Hide raw data" : "Show raw data"}
+        </span>
+      </button>
+
+      {open && (
+        <div className="mt-4 space-y-4">
+          <div className="flex items-center justify-between gap-4">
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className="rounded-lg border border-rule bg-ground-raised px-2 py-1 text-xs text-ink"
+            >
+              <option value="all">All fields ({ALL_COLS.length})</option>
+              {GROUPS.map((g) => (
+                <option key={g.id} value={g.id}>
+                  {g.label} ({g.cols.length})
+                </option>
               ))}
-            </tr>
-          </thead>
-          <tbody>
-            {newestFirst.map((r, i) => (
-              <tr key={i} className="border-t border-stone-100 text-stone-700">
-                <td className="whitespace-nowrap py-2 pr-4 text-sm">{fmtTs(r.ts)}</td>
-                {visibleCols.map((c) => {
-                  const v = r[c.key];
-                  const txt = c.fmt ? c.fmt(v) : dash(v);
-                  return (
-                    <td key={c.key} className="whitespace-nowrap py-2 pr-4 font-mono text-xs">
-                      {txt}
+            </select>
+            <span className="text-xs text-ink-muted">{newestFirst.length} rows</span>
+          </div>
+
+          <div className="max-h-[28rem] overflow-auto">
+            <table className="min-w-full text-left">
+              <thead className="sticky top-0 z-10 bg-ground-raised">
+                <tr className="border-b border-rule text-[11px] uppercase tracking-[0.08em] text-ink-muted">
+                  <th className="whitespace-nowrap py-2 pr-4 font-normal">Time</th>
+                  {visibleCols.map((c) => (
+                    <th key={c.key} className="whitespace-nowrap py-2 pr-4 font-normal">
+                      {c.label}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {newestFirst.map((r, i) => (
+                  <tr key={i} className="border-t border-rule text-ink">
+                    <td className="whitespace-nowrap py-2 pr-4 text-sm">{fmtTs(r.ts)}</td>
+                    {visibleCols.map((c) => {
+                      const v = r[c.key];
+                      const txt = c.fmt ? c.fmt(v) : dash(v);
+                      return (
+                        <td key={c.key} className="whitespace-nowrap py-2 pr-4 font-mono text-xs">
+                          {txt}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+                {newestFirst.length === 0 && (
+                  <tr>
+                    <td className="py-4 text-sm text-ink-muted" colSpan={visibleCols.length + 1}>
+                      No telemetry rows yet.
                     </td>
-                  );
-                })}
-              </tr>
-            ))}
-            {newestFirst.length === 0 && (
-              <tr>
-                <td className="py-4 text-sm text-stone-500" colSpan={visibleCols.length + 1}>
-                  No telemetry rows yet.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
