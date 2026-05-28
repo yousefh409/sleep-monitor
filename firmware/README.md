@@ -2,18 +2,34 @@
 
 Adafruit ESP32 Feather V2 · PlatformIO · Arduino framework.
 
-## Setup
+Two PlatformIO environments:
 
-1. Install [PlatformIO](https://platformio.org/install) (VS Code extension recommended).
-2. Copy `include/config.h.example` to `include/config.h` and fill in your Wi-Fi + HiveMQ credentials.
-3. `pio run -t upload` to build and flash.
-4. `pio device monitor` to view serial debug.
+| Env | Source | What it does |
+|---|---|---|
+| `main` (default) | `src/main.cpp` | Production firmware: Wi-Fi → MQTT, publishes JSON to HiveMQ every 10 s. Needs `include/config.h`. |
+| `sensor_test` | `src/sensor_test.cpp` | Bench test only: reads all sensors, prints one JSON line to USB serial every 1 s. No Wi-Fi, no MQTT, no config.h needed. |
 
-## What it does
+## Setup (once)
 
-- Connects to Wi-Fi, then to HiveMQ Cloud over TLS.
-- Reads BME280 (temp/humidity/pressure), SGP30 (eCO₂/TVOC), photoresistor, microphone (dB SPL from 1024-sample RMS burst), and C1001 (presence, sleep state, breathing, heart rate, turnover, body movement, apnea events).
-- Publishes a JSON payload to `yousef/sleep01/telemetry` every 10 s.
-- Blinks the LED on D13 on each successful publish.
+Install [PlatformIO](https://platformio.org/install). VS Code extension recommended.
 
-See [../TECH-SPEC.md](../TECH-SPEC.md) for full JSON schema and behavior details.
+## Production build (main env)
+
+```bash
+cp include/config.h.example include/config.h
+# edit include/config.h with Wi-Fi + HiveMQ credentials
+pio run -e main -t upload
+pio device monitor
+```
+
+## Sensor test (no credentials needed)
+
+```bash
+pio run -e sensor_test -t upload
+pip install pyserial          # one-time
+python3 serial_monitor.py     # auto-detects the port and pretty-prints
+```
+
+The `serial_monitor.py` script clears the terminal and re-renders the current sensor reading each second — easy to watch values change as you move/breathe in front of the C1001, cover the photoresistor, blow on the BME280, etc.
+
+See [../TECH-SPEC.md](../TECH-SPEC.md) for the full JSON schema.
