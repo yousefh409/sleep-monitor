@@ -114,10 +114,19 @@ function Stat({ label, value, unit }: { label: string; value: string | number; u
   );
 }
 
+const WINDOWS = [
+  { value: 10,    label: "Last 10 minutes",  poll: 5_000 },
+  { value: 60,    label: "Last hour",        poll: 15_000 },
+  { value: 360,   label: "Last 6 hours",     poll: 30_000 },
+  { value: 1440,  label: "Last 24 hours",    poll: 60_000 },
+  { value: 10080, label: "Last 7 days",      poll: 120_000 },
+];
+
 export default function Page() {
   const [nights, setNights] = useState<NightRow[]>([]);
   const [selected, setSelected] = useState<NightDetail | null>(null);
   const [live, setLive] = useState<LiveRow[]>([]);
+  const [window, setWindow] = useState<number>(10);
 
   useEffect(() => {
     fetch("/api/nights").then((r) => r.json()).then((d) => {
@@ -127,11 +136,15 @@ export default function Page() {
   }, []);
 
   useEffect(() => {
-    const tick = () => fetch("/api/live").then((r) => r.json()).then((d) => setLive(d.rows));
+    const cfg = WINDOWS.find((w) => w.value === window) ?? WINDOWS[0];
+    const tick = () =>
+      fetch(`/api/live?minutes=${window}`)
+        .then((r) => r.json())
+        .then((d) => setLive(d.rows));
     tick();
-    const id = setInterval(tick, 5000);
+    const id = setInterval(tick, cfg.poll);
     return () => clearInterval(id);
-  }, []);
+  }, [window]);
 
   function loadNight(id: number) {
     fetch(`/api/nights/${id}`).then((r) => r.json()).then(setSelected);
@@ -163,11 +176,24 @@ export default function Page() {
         </header>
 
         <section className="rounded-2xl bg-white p-6 shadow-sm">
-          <div className="mb-4 flex items-baseline justify-between">
-            <h2 className="text-sm font-medium uppercase tracking-wide text-stone-500">Live · last 10 minutes</h2>
-            <span className={`text-xs ${live.length ? "text-emerald-600" : "text-stone-400"}`}>
-              {live.length ? "● streaming" : "○ no data yet"}
-            </span>
+          <div className="mb-4 flex items-baseline justify-between gap-4">
+            <h2 className="text-sm font-medium uppercase tracking-wide text-stone-500">
+              Live · {WINDOWS.find((w) => w.value === window)?.label.toLowerCase() ?? "last 10 minutes"}
+            </h2>
+            <div className="flex items-center gap-3">
+              <select
+                value={window}
+                onChange={(e) => setWindow(Number(e.target.value))}
+                className="rounded-lg border border-stone-200 bg-white px-2 py-1 text-xs text-stone-700"
+              >
+                {WINDOWS.map((w) => (
+                  <option key={w.value} value={w.value}>{w.label}</option>
+                ))}
+              </select>
+              <span className={`text-xs ${live.length ? "text-emerald-600" : "text-stone-400"}`}>
+                {live.length ? `● ${live.length} rows` : "○ no data"}
+              </span>
+            </div>
           </div>
           {latest ? (
             <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
