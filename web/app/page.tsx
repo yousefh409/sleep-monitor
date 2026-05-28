@@ -205,7 +205,6 @@ function PageInner() {
         />
 
         <StatsRow
-          stagePct={slot.inProgress ? null : (detail?.night.stage_pct ?? null)}
           vitals={slot.inProgress ? null : (detail?.night.vitals ?? null)}
           sleepTimeMin={slot.inProgress ? null : sleepTimeMin}
           wakeDurMin={slot.inProgress ? null : wakeDurMin}

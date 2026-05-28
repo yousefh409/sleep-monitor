@@ -38,7 +38,7 @@ export function NightHero({ score, headline, inProgress, startedAt, endedAt, dur
   const showTimes = !inProgress && (bed || wake || dur);
 
   return (
-    <section className="flex flex-col items-baseline gap-3 pt-6 pb-2 sm:flex-row sm:gap-10">
+    <section className="flex flex-col items-start gap-3 pt-6 pb-2 sm:flex-row sm:items-center sm:gap-8">
       <span
         className="font-light leading-none tracking-[-0.04em] text-copper"
         style={{ fontSize: "clamp(96px, 14vw, 144px)" }}
