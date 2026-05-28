@@ -38,42 +38,40 @@ export function NightHero({ score, headline, inProgress, startedAt, endedAt, dur
   const showTimes = !inProgress && (bed || wake || dur);
 
   return (
-    <section className="flex flex-col items-baseline gap-3 pt-6 pb-2 sm:flex-row sm:gap-10">
+    <section className="flex flex-wrap items-baseline gap-x-10 gap-y-3 pt-6 pb-2">
       <span
         className="font-light leading-none tracking-[-0.04em] text-copper"
         style={{ fontSize: "clamp(96px, 14vw, 144px)" }}
       >
         {display}
       </span>
-      <div className="flex flex-col gap-3">
-        {sub && (
-          <p className="max-w-prose text-[22px] font-light leading-[1.2] tracking-[-0.01em] text-ink">
-            {sub}
-          </p>
-        )}
-        {showTimes && (
-          <div className="flex flex-wrap gap-x-6 gap-y-1 text-[18px]">
-            {bed && (
-              <div>
-                <span className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">Asleep</span>
-                <span className="ml-2 font-mono text-ink">{bed}</span>
-              </div>
-            )}
-            {wake && (
-              <div>
-                <span className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">Awake</span>
-                <span className="ml-2 font-mono text-ink">{wake}</span>
-              </div>
-            )}
-            {dur && (
-              <div>
-                <span className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">Total</span>
-                <span className="ml-2 font-mono text-ink">{dur}</span>
-              </div>
-            )}
-          </div>
-        )}
-      </div>
+      {sub && (
+        <p className="max-w-prose text-[22px] font-light leading-[1.2] tracking-[-0.01em] text-ink">
+          {sub}
+        </p>
+      )}
+      {showTimes && (
+        <div className="flex flex-wrap gap-x-6 gap-y-1 text-[16px]">
+          {bed && (
+            <div>
+              <span className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">Asleep</span>
+              <span className="ml-2 font-mono text-ink">{bed}</span>
+            </div>
+          )}
+          {wake && (
+            <div>
+              <span className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">Awake</span>
+              <span className="ml-2 font-mono text-ink">{wake}</span>
+            </div>
+          )}
+          {dur && (
+            <div>
+              <span className="text-[11px] uppercase tracking-[0.08em] text-ink-muted">Total</span>
+              <span className="ml-2 font-mono text-ink">{dur}</span>
+            </div>
+          )}
+        </div>
+      )}
     </section>
   );
 }

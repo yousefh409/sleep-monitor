@@ -23,9 +23,9 @@ function Stat({ label, value, unit, info }: { label: string; value: string | num
           <span
             title={info}
             aria-label={info}
-            className="cursor-help text-[10px] text-ink-muted/60"
+            className="inline-flex h-3.5 w-3.5 cursor-help items-center justify-center rounded-full border border-ink-muted/40 font-serif text-[9px] italic leading-none text-ink-muted/70"
           >
-            ⓘ
+            i
           </span>
         )}
       </span>

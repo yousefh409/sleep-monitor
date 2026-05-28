@@ -207,13 +207,13 @@ function PageInner() {
         <StatsRow
           stagePct={slot.inProgress ? null : (detail?.night.stage_pct ?? null)}
           vitals={slot.inProgress ? null : (detail?.night.vitals ?? null)}
-          sleepTimeMin={sleepTimeMin}
-          wakeDurMin={wakeDurMin}
-          sleepQuality={sleepQuality}
-          turnover={turnover}
-          apneaEvents={apneaEvents}
-          lightSleepMin={lightSleepMin}
-          deepSleepMin={deepSleepMin}
+          sleepTimeMin={slot.inProgress ? null : sleepTimeMin}
+          wakeDurMin={slot.inProgress ? null : wakeDurMin}
+          sleepQuality={slot.inProgress ? null : sleepQuality}
+          turnover={slot.inProgress ? null : turnover}
+          apneaEvents={slot.inProgress ? null : apneaEvents}
+          lightSleepMin={slot.inProgress ? null : lightSleepMin}
+          deepSleepMin={slot.inProgress ? null : deepSleepMin}
         />
 
         <StageBand rows={rows} />
