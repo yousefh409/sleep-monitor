@@ -44,14 +44,25 @@ float readDbBurst() {
 }
 
 void wifiConnect() {
+  Serial.print("WiFi: connecting to "); Serial.println(WIFI_SSID);
   WiFi.mode(WIFI_STA);
   WiFi.begin(WIFI_SSID, WIFI_PASS);
-  while (WiFi.status() != WL_CONNECTED) delay(250);
+  uint32_t t0 = millis();
+  while (WiFi.status() != WL_CONNECTED) {
+    if (millis() - t0 > 1000) { Serial.print("."); t0 = millis(); }
+    delay(50);
+  }
+  Serial.print(" connected, IP="); Serial.println(WiFi.localIP());
 }
 
 void mqttConnect() {
+  Serial.print("MQTT: connecting to "); Serial.print(MQTT_HOST); Serial.print(":"); Serial.println(MQTT_PORT);
   while (!mqtt.connected()) {
-    if (mqtt.connect(DEVICE_ID, MQTT_USER, MQTT_PASS)) return;
+    if (mqtt.connect(DEVICE_ID, MQTT_USER, MQTT_PASS)) {
+      Serial.println("MQTT: connected");
+      return;
+    }
+    Serial.print("MQTT: failed rc="); Serial.println(mqtt.state());
     delay(1000);
   }
 }
@@ -111,7 +122,8 @@ void publishTelemetry() {
 
   char buf[1024];
   size_t n = serializeJson(doc, buf);
-  mqtt.publish(MQTT_TOPIC, buf, n);
+  bool ok = mqtt.publish(MQTT_TOPIC, buf, n);
+  Serial.print("MQTT pub "); Serial.print(ok ? "ok " : "FAIL "); Serial.print(n); Serial.println(" bytes");
 }
 
 void setup() {
