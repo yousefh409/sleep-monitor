@@ -47,6 +47,25 @@ type NightDetail = {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type TodayResponse = { device: string; telemetry: any[] };
 
+function maxField(rows: { [k: string]: unknown }[], key: string): number | null {
+  let max: number | null = null;
+  for (const r of rows) {
+    const v = r[key];
+    if (typeof v === "number" && !Number.isNaN(v)) {
+      if (max === null || v > max) max = v;
+    }
+  }
+  return max;
+}
+
+function lastField(rows: { [k: string]: unknown }[], key: string): number | null {
+  for (let i = rows.length - 1; i >= 0; i--) {
+    const v = rows[i][key];
+    if (typeof v === "number" && !Number.isNaN(v)) return v;
+  }
+  return null;
+}
+
 function PageInner() {
   const router = useRouter();
   const params = useSearchParams();
@@ -131,6 +150,14 @@ function PageInner() {
   // Telemetry rows used by the charts and stage band.
   const rows = slot.inProgress ? todayRows : (detail?.telemetry ?? []);
 
+  const sensorScore = maxField(rows, "sleep_score");
+  const sleepQuality = lastField(rows, "sleep_quality");
+  const turnover = maxField(rows, "turnover_total");
+  const apneaEvents = maxField(rows, "apnea_events");
+  const lightSleepMin = maxField(rows, "light_sleep_dur");
+  const deepSleepMin = maxField(rows, "deep_sleep_dur");
+  const durationSec = detail?.night.duration_sec ?? null;
+
   // Charts expect rows with `ts` ISO timestamps and the relevant fields — both endpoints return that shape.
   const chartRows = rows;
 
@@ -166,6 +193,13 @@ function PageInner() {
         <StatsRow
           stagePct={slot.inProgress ? null : (detail?.night.stage_pct ?? null)}
           vitals={slot.inProgress ? null : (detail?.night.vitals ?? null)}
+          durationSec={durationSec}
+          sensorScore={sensorScore}
+          sleepQuality={sleepQuality}
+          turnover={turnover}
+          apneaEvents={apneaEvents}
+          lightSleepMin={lightSleepMin}
+          deepSleepMin={deepSleepMin}
         />
 
         <StageBand rows={rows} />
