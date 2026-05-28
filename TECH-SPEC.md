@@ -58,9 +58,9 @@ Full wiring details in [CIRCUIT.md](CIRCUIT.md).
 |---|---|
 | Sample mic, compute 1 s RMS, update running max dB SPL | continuous |
 | Read C1001 sleep composite (state, breathing, heart rate, presence) | 1 Hz |
-| Read BME680 (T/H/P/gas) | 0.1 Hz (every 10 s); gas heater is 320 °C / 150 ms |
+| Read BME680 (T/H/P/gas) | every publish (~30 s); gas heater is 320 °C / 150 ms |
 | Read photoresistor ADC | 0.1 Hz |
-| Publish JSON to MQTT | every 10 s |
+| Publish JSON to MQTT | every 30 s (10 s caused mqtt.loop starvation on slow C1001 reads) |
 
 **Connection recovery:** Wi-Fi disconnect triggers reconnect loop. MQTT disconnect triggers reconnect loop.
 
@@ -114,7 +114,7 @@ Full wiring details in [CIRCUIT.md](CIRCUIT.md).
 | `humidity` | BME680 | % RH | |
 | `pressure_hpa` | BME680 | hPa | |
 | `gas_ohm` | BME680 | Ω | Gas/VOC sensor resistance; lower = more VOCs/contaminants |
-| `db_spl` | SPW2430, RMS over 1 s | dB SPL approx | Max over last 10 s |
+| `db_spl` | SPW2430, RMS over 1 s | dB SPL approx | Max over the 30 s publish window |
 | `light_raw` | Photoresistor | 0–4095 | ADC raw, calibrate to lux dashboard-side |
 
 **Session-level fields** (queried from C1001's `getSleepStatistics()` at end-of-session only, written directly to Postgres `nights` table, NOT in per-minute MQTT): `sleepQualityScore`, `sleepTime`, `wakeDuration`, `shallowSleepPercentage`, `deepSleepPercentage`, `timeOutOfBed`, `exitCount`, `turnOverCount`. These feed the AI briefing alongside the raw telemetry.
@@ -188,7 +188,7 @@ Wall-powered means no hard runtime constraint, but the firmware still implements
 | Wi-Fi modem-sleep | Modem off between MQTT publishes; wakes only to TX. Keep-alive set to 60 s. | ~50% of radio draw |
 | C1001 soft-stop on long absence | If `presence=0` for >30 minutes, send `stop` command over UART. Resume on next motion event. | ~100 mA → ~idle when room empty |
 | BME680 forced mode | One-shot reads instead of continuous; sleeps between reads. | ~99% of BME draw between samples |
-| Mic sampling burst | 1 s of 8 kHz ADC reads per 10 s, then ADC idle. | ~90% of ADC duty |
+| Mic sampling burst | ~64 ms bursts in the main loop between publishes; running max over the 30 s window | ~99% of ADC duty |
 
 **Measured baseline target:** ~80 mA average system current (vs ~150 mA naive always-on). Not battery-critical but documents good IoT design and gives the report something concrete to point at.
 

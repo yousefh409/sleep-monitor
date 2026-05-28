@@ -11,7 +11,7 @@ type SessionState = {
 };
 
 const sessions = new Map<string, SessionState>();
-const SAMPLES_PER_MIN = 6; // 10 s publish
+const SAMPLES_PER_MIN = 2; // 30 s publish interval
 const ONSET_MIN = 5;
 const END_ABSENCE_MIN = 5;
 const END_AWAKE_MIN = 10;

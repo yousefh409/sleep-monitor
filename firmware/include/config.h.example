@@ -11,5 +11,5 @@
 #define MQTT_TOPIC      "yousef/sleep01/telemetry"
 #define DEVICE_ID       "sleep01"
 
-#define PUBLISH_INTERVAL_MS 10000
+#define PUBLISH_INTERVAL_MS 30000
 #define MIC_CALIBRATION_DB  30.0
