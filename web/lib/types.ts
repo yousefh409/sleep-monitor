@@ -16,6 +16,10 @@ export type Telemetry = {
   gas_ohm?: number;
   db_spl?: number;
   light_raw?: number;
+  hum_presence?: number;
+  hum_motion?: number;
+  hum_range?: number;
+  hum_dist_cm?: number;
 };
 
 export type SleepReport = {

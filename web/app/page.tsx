@@ -23,6 +23,10 @@ type LiveRow = {
   gas_ohm: number | null;
   db_spl: number | null;
   light_raw: number | null;
+  hum_presence: number | null;
+  hum_motion: number | null;
+  hum_range: number | null;
+  hum_dist_cm: number | null;
 };
 
 type Report = {
@@ -133,7 +137,9 @@ export default function Page() {
             </span>
           </div>
           {latest ? (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-6">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">
+              <Stat label="Presence" value={latest.hum_presence ? "yes" : "no"} />
+              <Stat label="Distance" value={latest.hum_dist_cm ?? "–"} unit="cm" />
               <Stat label="In bed" value={latest.in_bed ? "yes" : "no"} />
               <Stat label="Breathing" value={latest.breathing ?? "–"} unit="bpm" />
               <Stat label="Heart rate" value={latest.heart_rate ?? "–"} unit="bpm" />

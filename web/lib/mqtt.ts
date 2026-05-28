@@ -30,11 +30,11 @@ async function insertTelemetry(t: Telemetry) {
   await pool.query(
     `INSERT INTO telemetry (device, ts, presence, in_bed, sleep_state, breathing, heart_rate,
        turnover, body_move_large, body_move_small, apnea_events, temp_c, humidity, pressure_hpa,
-       gas_ohm, db_spl, light_raw)
-     VALUES ($1, to_timestamp($2), $3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17)`,
+       gas_ohm, db_spl, light_raw, hum_presence, hum_motion, hum_range, hum_dist_cm)
+     VALUES ($1, to_timestamp($2), $3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21)`,
     [t.dev, t.t, t.presence, t.in_bed, t.sleep_state, t.breathing, t.heart_rate,
      t.turnover, t.body_move_large, t.body_move_small, t.apnea_events, t.temp_c, t.humidity,
-     t.pressure_hpa, t.gas_ohm, t.db_spl, t.light_raw]
+     t.pressure_hpa, t.gas_ohm, t.db_spl, t.light_raw, t.hum_presence, t.hum_motion, t.hum_range, t.hum_dist_cm]
   );
 }
 

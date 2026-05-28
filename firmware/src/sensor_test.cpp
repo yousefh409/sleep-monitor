@@ -79,6 +79,12 @@ void loop() {
     doc["body_move_small"] = c.minorBodyMove;
     doc["apnea_events"]    = c.apneaEvents;
     doc["in_bed"]          = radar.smSleepData(DFRobot_HumanDetection::eInOrNotInBed);
+
+    // raw human-detection fields (more responsive than the sleep classifier)
+    doc["hum_presence"] = radar.smHumanData(DFRobot_HumanDetection::eHumanPresence);
+    doc["hum_motion"]   = radar.smHumanData(DFRobot_HumanDetection::eHumanMovement);
+    doc["hum_range"]    = radar.smHumanData(DFRobot_HumanDetection::eHumanMovingRange);
+    doc["hum_dist_cm"]  = radar.smHumanData(DFRobot_HumanDetection::eHumanDistance);
   } else {
     doc["radar"] = "missing";
   }

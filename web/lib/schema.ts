@@ -17,10 +17,18 @@ CREATE TABLE IF NOT EXISTS telemetry (
   pressure_hpa    REAL,
   gas_ohm         INT,
   db_spl          REAL,
-  light_raw       INT
+  light_raw       INT,
+  hum_presence    INT,
+  hum_motion      INT,
+  hum_range       INT,
+  hum_dist_cm     INT
 );
 
 ALTER TABLE telemetry ADD COLUMN IF NOT EXISTS gas_ohm INT;
+ALTER TABLE telemetry ADD COLUMN IF NOT EXISTS hum_presence INT;
+ALTER TABLE telemetry ADD COLUMN IF NOT EXISTS hum_motion INT;
+ALTER TABLE telemetry ADD COLUMN IF NOT EXISTS hum_range INT;
+ALTER TABLE telemetry ADD COLUMN IF NOT EXISTS hum_dist_cm INT;
 
 CREATE INDEX IF NOT EXISTS telemetry_device_ts_idx ON telemetry (device, ts DESC);
 

@@ -72,6 +72,11 @@ void publishTelemetry() {
   doc["body_move_large"] = c.largeBodyMove;
   doc["body_move_small"] = c.minorBodyMove;
   doc["apnea_events"]   = c.apneaEvents;
+  doc["hum_presence"]   = radar.smHumanData(DFRobot_HumanDetection::eHumanPresence);
+  doc["hum_motion"]     = radar.smHumanData(DFRobot_HumanDetection::eHumanMovement);
+  doc["hum_range"]      = radar.smHumanData(DFRobot_HumanDetection::eHumanMovingRange);
+  doc["hum_dist_cm"]    = radar.smHumanData(DFRobot_HumanDetection::eHumanDistance);
+
   if (bme.performReading()) {
     doc["temp_c"]       = bme.temperature;
     doc["humidity"]     = bme.humidity;
