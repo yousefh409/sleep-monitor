@@ -20,6 +20,13 @@ export type Slot = {
 
 const PST = "America/Los_Angeles";
 
+// "Sleep date": which calendar day a night belongs to.
+// Shifts bedtime back 6 hours so 1am Thursday counts as Wednesday.
+export function sleepDate(iso: string): string {
+  const t = new Date(iso).getTime() - 6 * 3600 * 1000;
+  return pstDate(new Date(t));
+}
+
 // "YYYY-MM-DD" for a Date in PST.
 export function pstDate(d: Date | string): string {
   const date = typeof d === "string" ? new Date(d) : d;
@@ -44,7 +51,7 @@ export function buildSlots(nights: NightRow[]): Slot[] {
   const today = todayPst();
   const slots: Slot[] = nights
     .map(n => ({
-      date: pstDate(n.started_at),
+      date: sleepDate(n.started_at),
       nightId: n.id,
       score: n.sleep_score,
       headline: n.headline,
