@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sleep monitor",
+  title: "Sleep Monitor",
   description: "Bedside contactless sleep tracking",
 };
 
