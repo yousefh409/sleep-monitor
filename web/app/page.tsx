@@ -21,6 +21,7 @@ import { SleepHealth } from "./components/SleepHealth";
 import { EmptyState } from "./components/EmptyState";
 import { VitalsChart, EnvironmentChart, AudioChart, LightChart } from "./components/LiveCharts";
 import { TelemetryTable } from "./components/TelemetryTable";
+import { FacilityOverview } from "./components/FacilityOverview";
 
 type StagePct = { awake: number; light: number; deep: number };
 type Vitals = { avg_breathing: number; avg_heart_rate: number };
@@ -194,6 +195,11 @@ function PageInner() {
   return (
     <main className="min-h-screen bg-ground">
       <div className="mx-auto max-w-5xl space-y-10 px-6 py-10">
+        <FacilityOverview
+          selectedDate={slot.date}
+          realScore={slot.inProgress ? null : (detail?.night.report_score ?? slot.score ?? null)}
+          realSleepTimeMin={slot.inProgress ? null : sleepTimeMin}
+        />
         <div ref={headerRef} className="relative">
           <NightHeader
             slot={slot}
