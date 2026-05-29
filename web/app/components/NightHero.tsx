@@ -39,12 +39,17 @@ export function NightHero({ score, headline, inProgress, startedAt, endedAt, dur
 
   return (
     <section className="flex flex-col items-start gap-3 pt-6 pb-2 sm:flex-row sm:items-center sm:gap-8">
-      <span
-        className="font-light leading-none tracking-[-0.04em] text-copper"
-        style={{ fontSize: "clamp(96px, 14vw, 144px)" }}
-      >
-        {display}
-      </span>
+      <div className="flex flex-col items-start">
+        <span
+          className="font-light leading-none tracking-[-0.04em] text-copper"
+          style={{ fontSize: "clamp(96px, 14vw, 144px)" }}
+        >
+          {display}
+        </span>
+        <span className="mt-2 text-[11px] font-medium uppercase tracking-[0.08em] text-ink-muted">
+          Sleep score
+        </span>
+      </div>
       <div className="flex flex-col gap-3">
         {sub && (
           <p className="max-w-prose text-[22px] font-light leading-[1.2] tracking-[-0.01em] text-ink">
