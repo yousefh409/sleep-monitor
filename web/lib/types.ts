@@ -41,11 +41,19 @@ export type Telemetry = {
   turnover_total?: number;
 };
 
+export type WakeEvent = {
+  ts: string;
+  likely_cause: string;
+  triggers?: string[];
+  confidence?: "low" | "medium" | "high";
+};
+
 export type SleepReport = {
   headline: string;
   sleep_score: number;
   stage_pct: { awake: number; light: number; deep: number };
   vitals: { avg_breathing: number; avg_heart_rate: number };
-  wake_events: { ts: string; likely_cause: string }[];
+  wake_events: WakeEvent[];
   recommendations: string[];
+  sleep_health?: string;
 };
