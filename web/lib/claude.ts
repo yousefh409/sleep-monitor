@@ -1,8 +1,16 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { SleepReport } from "./types";
 
-const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-const MODEL = process.env.ANTHROPIC_MODEL ?? "claude-sonnet-4-6";
+// Lazy-init so callers can load env (e.g. dotenv in a CLI script) before this module
+// dereferences process.env.
+let _client: Anthropic | null = null;
+function client(): Anthropic {
+  if (!_client) _client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+  return _client;
+}
+function model(): string {
+  return process.env.ANTHROPIC_MODEL ?? "claude-sonnet-4-6";
+}
 
 const SYSTEM_PROMPT = `You are a sleep coach analyzing one night of contactless mmWave radar data.
 
@@ -86,8 +94,8 @@ JSON object. Do not pad. If a section has nothing to say, return an empty
 array or a brief, honest sentence.`;
 
 export async function generateSleepReport(stats: string, csvData: string): Promise<SleepReport> {
-  const resp = await client.messages.create({
-    model: MODEL,
+  const resp = await client().messages.create({
+    model: model(),
     max_tokens: 2048,
     system: [
       { type: "text", text: SYSTEM_PROMPT, cache_control: { type: "ephemeral" } },
