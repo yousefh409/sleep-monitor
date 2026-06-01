@@ -15,6 +15,12 @@ A 60 GHz mmWave radar watches your breathing, heart rate, and sleep stages from 
   <img alt="DB" src="https://img.shields.io/badge/DB-Postgres-4169E1?logo=postgresql&logoColor=white">
 </p>
 
+<p align="center">
+  <img alt="The assembled bedside node" src="docs/screenshots/hardware.png" width="440">
+  <br>
+  <em>The assembled node — ESP32 Feather + 60 GHz radar in a 3D-printed enclosure on a ball-joint wall mount.</em>
+</p>
+
 ---
 
 ## Why
@@ -51,6 +57,20 @@ USB-C wall ──> [Feather V2 ESP32] ──5V──> [C1001 60 GHz mmWave radar
 ```
 
 The ESP32 publishes a ~350-byte JSON snapshot every 30 s. A single Next.js app subscribes over TLS, stores each row, and runs in-memory wake detection. When a sleep session ends it bundles the night, sends it to Claude, and stores a structured report the dashboard renders the next morning.
+
+## The dashboard
+
+**AI morning briefing** — a sleep score, plain-English headline, the stage breakdown, and overnight sleep-stage bands.
+
+![AI morning briefing](docs/screenshots/dashboard-briefing.png)
+
+**Annotated wake events** — each arousal paired with its likely cause and concrete recommendations for the next night.
+
+![Wake events and recommendations](docs/screenshots/dashboard-wake-events.png)
+
+**Overnight telemetry** — vitals (breathing + heart rate) over the full night, with the environmental signals that drive wake-cause correlation.
+
+![Overnight vitals and environment charts](docs/screenshots/dashboard-charts.png)
 
 ## Tech stack
 
@@ -97,5 +117,4 @@ cd web && npm install && npm run dev # see web/README.md for env vars + deploy
 - [TECH-SPEC.md](TECH-SPEC.md) — technical spec (firmware, MQTT, backend, dashboard)
 - [DESIGN.md](DESIGN.md) — hardware design
 - [WIRING.md](WIRING.md) — pin-by-pin wiring guide
-- [CIRCUIT.md](CIRCUIT.md) — power + signal topology
 - [PRINT-PLAN.md](PRINT-PLAN.md) — 3D print + assembly plan
