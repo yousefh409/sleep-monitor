@@ -1,6 +1,6 @@
 # PRD: Contactless Sleep & Environment Monitor
 
-**Course:** EE284A · **Author:** Yousef Helal · **Date:** 2026-05-26 · **Demo:** 2026-06-09
+**Author:** Yousef Helal · **Date:** 2026-05-26
 
 ## Problem
 A third of adults sleep poorly, but consumer sleep trackers require nightly wearable compliance and can't explain *why* sleep was disrupted. Clinical-grade alternatives are expensive and intrusive.

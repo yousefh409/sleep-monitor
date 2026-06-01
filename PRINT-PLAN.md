@@ -1,6 +1,6 @@
 # Print & Assembly Plan
 
-**Date:** 2026-05-26 · **For:** EE284A sleep monitor build · **Companion to:** [PRD.md](PRD.md), [DESIGN.md](DESIGN.md)
+**Date:** 2026-05-26 · **For:** Sleep monitor build · **Companion to:** [PRD.md](PRD.md), [DESIGN.md](DESIGN.md)
 
 ## 1. Mechanical System Overview
 

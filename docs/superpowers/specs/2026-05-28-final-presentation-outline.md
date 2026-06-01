@@ -1,6 +1,6 @@
 # Final Presentation Outline — Contactless Sleep & Environment Monitor
 
-**Course:** EE284A · **Author:** Yousef Helal · **Demo day:** 2026-06-09
+**Author:** Yousef Helal · **Demo day:** 2026-06-09
 **Format:** 25 min total = 15 min talk + 10 min live demo + 5 min Q&A
 
 ## Framing decisions
@@ -12,7 +12,7 @@
 
 | # | Slide | Job |
 |---|-------|-----|
-| 1 | Title | Contactless Sleep & Environment Monitor · eldercare framing · author · EE284A. (Optional cold-open on the statistic instead.) |
+| 1 | Title | Contactless Sleep & Environment Monitor · eldercare framing · author. (Optional cold-open on the statistic instead.) |
 | 2 | Hook | Hard statistic — sleep as a health monitor / early-warning signal in older adults |
 | 3 | Problem | Comparison table: wearables vs clinical sleep study vs cameras vs this system — only this system checks every box (compliance-free, low-cost, private, continuous) |
 | 4 | Solution reveal | The single idea: passive contactless bedside monitor, nothing to wear + one value-prop line + device image |

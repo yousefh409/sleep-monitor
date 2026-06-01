@@ -1,4 +1,4 @@
-# EE284A Sleep Monitor
+# Sleep Monitor
 
 Contactless bedside sleep tracker. ESP32 Feather V2 + 60 GHz mmWave radar + air-quality + environmental sensors → MQTT → Next.js dashboard with Claude-powered morning briefing.
 

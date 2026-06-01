@@ -9,9 +9,7 @@
 .next/
 .superpowers/
 .vscode/
-EE284A_Final_Project.pdf
-EE284A_Final_Project_Proposal__1_.pdf
-EE284A_Final_Report.pdf
+*.pdf
 build/
 data/backups/
 dist/
